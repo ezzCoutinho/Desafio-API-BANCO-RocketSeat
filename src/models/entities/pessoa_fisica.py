@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, BIGINT, REAL
 from src.models.settings.base import Base
 
 
-class PessoaFisica(Base):
+class PessoaFisicaTable(Base):
     __tablename__ = "pessoa_fisica"
 
     id = Column(BIGINT, primary_key=True)
