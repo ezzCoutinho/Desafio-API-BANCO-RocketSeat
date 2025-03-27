@@ -1,0 +1,15 @@
+repos:
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: /Users/matheuscoutinho/Documents/rocketseat/python/modulo-8/venv/bin/pylint
+        language: system
+        types: [python]
+        args:
+          [
+          "-rn",
+          "-sn", 
+          "--rcfile=.pylintrc", 
+          "--load-plugins=pylint.extensions.docparams", 
+          ]
