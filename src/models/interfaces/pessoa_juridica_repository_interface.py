@@ -19,3 +19,11 @@ class PessoaJuridicaRepositoryInterface(ABC):
     @abstractmethod
     def get_pessoa_juridica(self, pessoa_id: str) -> PessoaJuridicaTable:
         pass
+
+    @abstractmethod
+    def sacar_pessoa_juridica(
+        self,
+        pessoa_id: str,
+        valor: float,
+    ) -> PessoaJuridicaTable:
+        pass
