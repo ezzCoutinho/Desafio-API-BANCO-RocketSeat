@@ -19,11 +19,3 @@ class PessoaFisicaRepositoryInterface(ABC):
     @abstractmethod
     def get_pessoa_fisica(self, pessoa_id: str) -> PessoaFisicaTable:
         pass
-
-    @abstractmethod
-    def sacar_pessoa_fisica(
-        self,
-        pessoa_id: str,
-        valor: float,
-    ) -> PessoaFisicaTable:
-        pass

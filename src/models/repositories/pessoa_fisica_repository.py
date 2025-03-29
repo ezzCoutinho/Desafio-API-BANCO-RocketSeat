@@ -47,26 +47,3 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
                 return person
             except NoResultFound:
                 return None  # type: ignore
-
-    def sacar_pessoa_fisica(
-        self,
-        pessoa_id: str,
-        valor: float,
-    ) -> PessoaFisicaTable:
-        with self.__db_connection() as database:
-            try:
-                person = (
-                    database.session.query(PessoaFisicaTable)
-                    .filter(PessoaFisicaTable.id == pessoa_id)
-                    .first()
-                )
-                person.saldo -= valor
-                database.session.commit()
-                return person
-            except Exception as exception:
-                if isinstance(exception, NoResultFound):
-                    raise NoResultFound("Pessoa não encontrada!")
-                if person.saldo < valor:  # type: ignore
-                    raise ValueError("Saldo insuficiente!")
-                database.session.rollback()
-                raise exception
