@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, BIGINT, REAL
+from sqlalchemy import BIGINT, REAL, Column, String
+
 from src.models.settings.base import Base
 
 

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from src.models.entities.pessoa_fisica import PessoaFisicaTable
 
 

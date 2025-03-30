@@ -1,4 +1,5 @@
 from sqlalchemy.exc import NoResultFound
+
 from src.models.entities.pessoa_juridica import PessoaJuridicaTable
 from src.models.interfaces.pessoa_juridica_repository_interface import (
     PessoaJuridicaRepositoryInterface,

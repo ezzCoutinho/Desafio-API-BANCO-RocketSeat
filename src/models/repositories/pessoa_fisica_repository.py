@@ -1,4 +1,5 @@
 from sqlalchemy.exc import NoResultFound
+
 from src.models.entities.pessoa_fisica import PessoaFisicaTable
 from src.models.interfaces.pessoa_fisica_repository_interface import (
     PessoaFisicaRepositoryInterface,
