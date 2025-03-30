@@ -10,7 +10,7 @@ from src.models.interfaces.pessoa_juridica_repository_interface import (
 )
 
 
-class PessoaFisicaGetController(PessoaFisicaGetControllerInterface):
+class PessoaJuridicaGetController(PessoaFisicaGetControllerInterface):
     def __init__(
         self, pessoa_juridica_repository: PessoaJuridicaRepositoryInterface
     ) -> None:
