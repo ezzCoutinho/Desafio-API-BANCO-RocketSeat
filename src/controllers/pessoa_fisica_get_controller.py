@@ -34,7 +34,7 @@ class PessoaFisicaGetController(PessoaFisiscaGetControllerInterface):
             "data": {
                 "type": "pessoa_fisica",
                 "count": 1,
-                "atributes": {
+                "attributes": {
                     "renda_mensal": person.renda_mensal,
                     "idade": person.idade,
                     "nome_completo": person.nome_completo,
