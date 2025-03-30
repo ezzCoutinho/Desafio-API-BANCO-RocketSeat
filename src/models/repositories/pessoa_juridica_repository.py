@@ -48,3 +48,29 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
                 return person
             except NoResultFound:
                 return None  # type: ignore
+
+    def sacar_dinheiro_pessoa_fisica(
+        self, pessoa_id: str, valor: float
+    ) -> PessoaJuridicaTable:
+        with self.__db_connection() as database:
+            try:
+                pessoa = (
+                    database.session.query(PessoaJuridicaTable)
+                    .filter(PessoaJuridicaTable.id == pessoa_id)
+                    .first()
+                )
+
+                if not pessoa:
+                    raise Exception("Pessoa física não encontrada")
+
+                if valor > pessoa.saldo:
+                    raise Exception("Saldo insuficiente para realizar o saque")
+
+                pessoa.saldo -= valor
+
+                database.session.commit()
+                return pessoa
+
+            except Exception as exception:
+                database.session.rollback()
+                raise exception
