@@ -1,7 +1,7 @@
 from typing import Dict
 
 from src.controllers.interfaces.pessoa_juridica_get_controller_interface import (
-    PessoaFisicaGetControllerInterface,
+    PessoaJuridicaGetControllerInterface,
 )
 from src.errors.errors_types.http_not_found import HttpNotFound
 from src.models.entities.pessoa_juridica import PessoaJuridicaTable
@@ -10,7 +10,7 @@ from src.models.interfaces.pessoa_juridica_repository_interface import (
 )
 
 
-class PessoaJuridicaGetController(PessoaFisicaGetControllerInterface):
+class PessoaJuridicaGetController(PessoaJuridicaGetControllerInterface):
     def __init__(
         self, pessoa_juridica_repository: PessoaJuridicaRepositoryInterface
     ) -> None:

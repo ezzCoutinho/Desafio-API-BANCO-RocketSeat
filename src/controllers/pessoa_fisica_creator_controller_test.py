@@ -1,4 +1,5 @@
 import pytest
+
 from src.controllers.pessoa_fisica_creator_controller import (
     PessoaFisicaCreatorController,
 )

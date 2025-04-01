@@ -18,7 +18,11 @@ class PessoaJuridicaSacarController(PessoaJuridicaSacarControllerInterface):
 
     def sacar_dinheiro_pessoa_juridica(self, pessoa_id: str, valor: float) -> Dict:
         self.__validate_saque(pessoa_id, valor)
-        formatted_response = self.__format_response(pessoa_id, valor)
+        saldo = self.__pessoa_juridica_repository.sacar_dinheiro_pessoa_juridica(
+            pessoa_id, valor
+        )
+
+        formatted_response = self.__format_response(pessoa_id, valor, saldo)
 
         return formatted_response
 
@@ -41,14 +45,15 @@ class PessoaJuridicaSacarController(PessoaJuridicaSacarControllerInterface):
         if valor > pessoa.saldo:  # type: ignore
             raise HttpBadRequest("Saldo insuficiente para realizar o saque.")
 
-    def __format_response(self, person_id: str, valor: float) -> Dict:
-        pessoa = self.__pessoa_juridica_repository.get_pessoa_juridica(person_id)
+    def __format_response(self, pessoa_id: str, valor: float, saldo: float) -> Dict:
         return {
             "sucess": True,
             "data": {
-                "id": person_id,
+                "id": pessoa_id,
                 "valor_sacado": valor,
-                "saldo_atual": pessoa.saldo,
+                "saldo_atual": saldo.saldo_atual  # type: ignore
+                if hasattr(saldo, "saldo_atual")
+                else saldo.saldo,  # type: ignore
                 "mensagem": "Saque realizado com sucesso!",
             },
         }

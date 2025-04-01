@@ -1,5 +1,6 @@
 # pylint: disable=unused-argument
 import pytest
+
 from src.controllers.pessoa_fisica_get_controller import PessoaFisicaGetController
 
 
