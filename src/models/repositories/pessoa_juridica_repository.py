@@ -1,5 +1,7 @@
 from sqlalchemy.exc import NoResultFound
 
+from src.errors.errors_types.http_bad_request import HttpBadRequest
+from src.errors.errors_types.http_not_found import HttpNotFound
 from src.models.entities.pessoa_juridica import PessoaJuridicaTable
 from src.models.interfaces.pessoa_juridica_repository_interface import (
     PessoaJuridicaRepositoryInterface,
@@ -20,7 +22,8 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
         categoria: str,
         saldo: float,
     ) -> None:
-        with self.__db_connection() as database:
+        self.__db_connection.connect_to_db()
+        with self.__db_connection as database:
             try:
                 person_data = PessoaJuridicaTable(
                     faturamento=faturamento,
@@ -38,7 +41,8 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
                 raise error
 
     def get_pessoa_juridica(self, pessoa_id: str) -> PessoaJuridicaTable:
-        with self.__db_connection() as database:
+        self.__db_connection.connect_to_db()
+        with self.__db_connection as database:
             try:
                 person = (
                     database.session.query(PessoaJuridicaTable)
@@ -49,10 +53,11 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
             except NoResultFound:
                 return None  # type: ignore
 
-    def sacar_dinheiro_pessoa_fisica(
+    def sacar_dinheiro_pessoa_juridica(
         self, pessoa_id: str, valor: float
     ) -> PessoaJuridicaTable:
-        with self.__db_connection() as database:
+        self.__db_connection.connect_to_db()
+        with self.__db_connection as database:
             try:
                 pessoa = (
                     database.session.query(PessoaJuridicaTable)
@@ -61,15 +66,20 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
                 )
 
                 if not pessoa:
-                    raise Exception("Pessoa física não encontrada")
+                    raise HttpNotFound("Pessoa jurídica não encontrada")
 
                 if valor > pessoa.saldo:
-                    raise Exception("Saldo insuficiente para realizar o saque")
+                    raise HttpBadRequest("Saldo insuficiente para realizar o saque")
 
                 pessoa.saldo -= valor
 
                 database.session.commit()
-                return pessoa
+                pessoa_dict = {
+                    "id": pessoa.id,
+                    "saldo": pessoa.saldo,
+                }
+
+                return type("PessoaJuridicaTable", (), pessoa_dict)  # type: ignore
 
             except Exception as exception:
                 database.session.rollback()
