@@ -1,5 +1,7 @@
 from sqlalchemy.exc import NoResultFound
 
+from src.errors.errors_types.http_bad_request import HttpBadRequest
+from src.errors.errors_types.http_not_found import HttpNotFound
 from src.models.entities.pessoa_fisica import PessoaFisicaTable
 from src.models.interfaces.pessoa_fisica_repository_interface import (
     PessoaFisicaRepositoryInterface,
@@ -20,7 +22,8 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
         categoria: str,
         saldo: float,
     ) -> None:
-        with self.__db_connection() as database:
+        self.__db_connection.connect_to_db()
+        with self.__db_connection as database:
             try:
                 person_data = PessoaFisicaTable(
                     renda_mensal=renda_mensal,
@@ -38,7 +41,8 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
                 raise exception
 
     def get_pessoa_fisica(self, pessoa_id: str) -> PessoaFisicaTable:
-        with self.__db_connection() as database:
+        self.__db_connection.connect_to_db()
+        with self.__db_connection as database:
             try:
                 person = (
                     database.session.query(PessoaFisicaTable)
@@ -52,7 +56,8 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
     def sacar_dinheiro_pessoa_fisica(
         self, pessoa_id: str, valor: float
     ) -> PessoaFisicaTable:
-        with self.__db_connection() as database:
+        self.__db_connection.connect_to_db()
+        with self.__db_connection as database:
             try:
                 pessoa = (
                     database.session.query(PessoaFisicaTable)
@@ -61,22 +66,27 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
                 )
 
                 if not pessoa:
-                    raise Exception("Pessoa física não encontrada")
+                    raise HttpNotFound("Pessoa física não encontrada")
 
                 limite_saque = pessoa.saldo * 0.8
 
                 if valor > limite_saque:
-                    raise Exception(
+                    raise HttpBadRequest(
                         f"Valor excede o limite de saque de {limite_saque:.2f}"
                     )
 
                 if valor > pessoa.saldo:
-                    raise Exception("Saldo insuficiente para realizar o saque")
+                    raise HttpBadRequest("Saldo insuficiente para realizar o saque")
 
                 pessoa.saldo -= valor
 
                 database.session.commit()
-                return pessoa
+                pessoa_dict = {
+                    "id": pessoa.id,
+                    "saldo": pessoa.saldo,
+                }
+
+                return type("PessoaFisicaTable", (), pessoa_dict)  # type: ignore
 
             except Exception as exception:
                 database.session.rollback()
